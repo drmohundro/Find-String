@@ -19,6 +19,13 @@ process {
 		$path
 	}
 
+	$indent = (Get-RelativePath $match.Path).Length + $match.LineNumber.ToString().Length + 2
+
+	if ($match.Context.DisplayPreContext -ne $null) {
+		Write-Host ''.PadLeft($indent) -nonewline
+		$match.Context.DisplayPreContext
+	}
+
 	Write-Host (Get-RelativePath $match.Path) -foregroundColor DarkMagenta -nonewline
 	Write-Host ':' -foregroundColor Cyan -nonewline
 	Write-Host $match.LineNumber -foregroundColor DarkYellow -nonewline
@@ -34,5 +41,11 @@ process {
 		Write-Host $match.Line.SubString($index) -nonewline
 	}
 	''
+
+	if ($match.Context.DisplayPostContext -ne $null) {
+		Write-Host ''.PadLeft($indent) -nonewline
+		$match.Context.DisplayPostContext
+		'-------------------------------'
+	}
 }
 end {}

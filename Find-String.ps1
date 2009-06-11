@@ -10,7 +10,8 @@ param (
 	[regex] $pattern,
 	[string] $filter = "*.*",
 	[switch] $recurse = $true,
-	[switch] $caseSensitive = $false
+	[switch] $caseSensitive = $false,
+	[int[]] $context = 0
 )
 
 if ((-not $caseSensitive) -and (-not $pattern.Options -match "IgnoreCase")) {
@@ -18,5 +19,5 @@ if ((-not $caseSensitive) -and (-not $pattern.Options -match "IgnoreCase")) {
 }
 
 Get-ChildItem -recurse:$recurse -filter:$filter |
-	Select-String -caseSensitive:$caseSensitive -pattern:$pattern -AllMatches | 
+	Select-String -caseSensitive:$caseSensitive -pattern:$pattern -AllMatches -context $context | 
 	Out-ColorMatchInfo
