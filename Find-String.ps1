@@ -4,6 +4,7 @@
 .Description
 	Searches text files by pattern and displays the results.
 #>
+#requires -version 2
 param ( 
 	[Parameter(Mandatory=$true)] 
 	[regex] $pattern,
