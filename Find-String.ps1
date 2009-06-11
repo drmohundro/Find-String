@@ -18,4 +18,4 @@ if ((-not $caseSensitive) -and (-not $pattern.Options -match "IgnoreCase")) {
 
 Get-ChildItem -recurse:$recurse -filter:$filter |
 	Select-String -caseSensitive:$caseSensitive -pattern:$pattern -AllMatches | 
-	Out-HighlightMatchInfo
+	Out-ColorMatchInfo
