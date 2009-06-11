@@ -18,7 +18,7 @@ if ((-not $caseSensitive) -and (-not $pattern.Options -match "IgnoreCase")) {
 
 function Write-HighlightedMatch {
 	process { 
-		Write-Host $_.Filename -foregroundColor DarkMagenta -nonewline
+		Write-Host (Get-RelativePath $_.Path) -foregroundColor DarkMagenta -nonewline
 		Write-Host ':' -foregroundColor Cyan -nonewline
 		Write-Host $_.LineNumber -foregroundColor DarkYellow -nonewline
 		Write-Host ':' -foregroundColor Cyan -nonewline
@@ -34,6 +34,14 @@ function Write-HighlightedMatch {
 		}
 		''
 	}
+}
+
+function Get-RelativePath([string] $path) {
+    $path = $path.Replace($pwd.Path, '')
+    if ($path.StartsWith('\') -and (-not $path.StartsWith('\\'))) { 
+        $path = $path.Substring(1) 
+    }
+    $path
 }
 
 Get-ChildItem -recurse:$recurse -filter:$filter |
