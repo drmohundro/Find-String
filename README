@@ -6,7 +6,7 @@ It currently highlights matches in a similar style to ack.
 
 
 NAME
-    c:\DTCDev\Personal\Find-String\Find-String.ps1
+    c:\MyScriptDir\Find-String.ps1
 
 SYNOPSIS
 	Searches text files by pattern and displays the results.
