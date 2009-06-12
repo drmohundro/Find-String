@@ -1,0 +1,21 @@
+Find-String is a PowerShell script whose purpose is to emulate grep and/or ack. 
+PowerShell already has the built-in Select-String cmdlet, but this script wraps
+provides match highlighting on top of the searching capabilities.
+
+It currently highlights matches in a similar style to ack.
+
+
+NAME
+    c:\DTCDev\Personal\Find-String\Find-String.ps1
+
+SYNOPSIS
+	Searches text files by pattern and displays the results.
+
+
+SYNTAX
+	c:\DTCDev\Personal\Find-String\Find-String.ps1 [-pattern] [<Regex>] 
+	[[-filter] [<String>]] [[-recurse]] [[-caseSensitive]] [[-context] 
+	[<Int32[]>]] [-Verbose] [-Debug] [-ErrorAction [<ActionPreference>]] 
+	[-WarningAction [<ActionPreference>]] [-ErrorVariable [<String>]] 
+	[-WarningVariable [<String>]] [-OutVariable [<String>]] 
+	[-OutBuffer [<Int32>]] [<Common	Parameters>]
