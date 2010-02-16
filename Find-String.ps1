@@ -8,15 +8,25 @@
 .Parameter Filter
     Specifies the file types to search in. The default is all file types.
 .Parameter Path
-    Specifies the path to the files to be searched. Wildcards are permitted. The default location is the local directory.
+    Specifies the path to the files to be searched. Wildcards are permitted. 
+    The default location is the local directory.
 .Parameter Recurse
-    Gets the items in the specified path and in all child directies. This is the default. 
+    Gets the items in the specified path and in all child directies. This is 
+    the default. 
 .Parameter CaseSensitive
     Makes matches case-sensitive. By default, matches are not case-sensitive.
 .Parameter Context
-    Captures the specified number of lines before and after the line with the match. This allows you to view the match in context.
+    Captures the specified number of lines before and after the line with the 
+    match. This allows you to view the match in context.
 .Parameter PassThru
-    Passes the literal MatchInfo object representing the found match to the pipeline. By default, this cmdlet does not send anything through the object pipeline.
+    Passes the literal MatchInfo object representing the found match to the 
+    pipeline. By default, this cmdlet does not send anything through the 
+    object pipeline.
+.Parameter PipeOutput
+    Sends all output along the object pipeline. By default, this command uses 
+    color to help with readability; however, this prevents the output from being 
+    piped to another command. If you wish to pipe the output of this command to
+    something else, be sure to use this parameter.
 #>
 #requires -version 2
 param ( 
