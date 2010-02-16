@@ -54,13 +54,13 @@ process {
 
 	function Write-PathOrSeparator($match) {
 		if ($script:priorPath -ne $match.Path) {
-			''
+			output ''
 			output (Get-RelativePath $match.Path) -foregroundColor Green
 			$script:priorPath = $match.Path
 		}
 		else {
 			if ($script:hasContext) { 
-				'--' 
+				output '--' 
 			}
 		}
 	}
@@ -101,9 +101,10 @@ process {
 
 	$lines = ($match.LineNumber + 1)..($match.LineNumber + $match.Context.DisplayPostContext.Length)
 	Write-ContextLines $match.Context.DisplayPostContext $lines
-}
-end {
+
+
     if ($script:buffer.Length -gt 0) {
         $script:buffer.ToString()
     }
 }
+end {}
