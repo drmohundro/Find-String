@@ -27,7 +27,8 @@ param (
     [switch] $recurse = $true,
     [switch] $caseSensitive = $false,
     [int[]] $context = 0,
-    [switch] $passThru = $false
+    [switch] $passThru = $false,
+    [switch] $pipeOutput
 )
 
 if ((-not $caseSensitive) -and (-not $pattern.Options -match "IgnoreCase")) {
@@ -41,5 +42,5 @@ if ($passThru) {
 else {
     Get-ChildItem -recurse:$recurse -filter:$filter -path $path |
         Select-String -caseSensitive:$caseSensitive -pattern:$pattern -AllMatches -context $context | 
-        Out-ColorMatchInfo
+        Out-ColorMatchInfo -pipeOutput:$pipeOutput
 }

@@ -11,14 +11,39 @@ param (
 	$match,
 
 	[switch]
-	$onlyShowMatches
+	$onlyShowMatches,
+
+    [switch]
+    $pipeOutput
 )
 
 begin {
 	$script:priorPath = ''
 	$script:hasContext = $false
+
+    $script:buffer = New-Object System.Text.StringBuilder
 }
 process { 
+    function output {
+        param (
+            [string] $str, 
+            $foregroundColor = $host.ui.RawUI.ForegroundColor, 
+            $backgroundColor = $host.ui.RawUI.BackgroundColor,
+            [switch] $noNewLine
+        )
+        if ($pipeOutput) {
+            if ($noNewLine) {
+                $script:buffer.Append($str) | out-null
+            }
+            else {
+                $script:buffer.AppendLine($str) | out-null
+            }
+        }
+        else {
+            Write-Host $str -foregroundColor $foregroundColor -backgroundColor $backgroundColor -noNewLine:$noNewLine
+        }
+    }
+
 	function Get-RelativePath([string] $path) {
 		$path = $path.Replace($pwd.Path, '')
 		if ($path.StartsWith('\') -and (-not $path.StartsWith('\\'))) { 
@@ -30,7 +55,7 @@ process {
 	function Write-PathOrSeparator($match) {
 		if ($script:priorPath -ne $match.Path) {
 			''
-			Write-Host (Get-RelativePath $match.Path) -foregroundColor Green
+			output (Get-RelativePath $match.Path) -foregroundColor Green
 			$script:priorPath = $match.Path
 		}
 		else {
@@ -42,18 +67,18 @@ process {
 
 	function Write-HighlightedMatch($match) {
 		if (-not $onlyShowMatches) {
-			Write-Host "$($match.LineNumber):" -nonewline
+			output "$($match.LineNumber):" -nonewline
 		}
 		$index = 0
 		foreach ($m in $match.Matches) {
-			Write-Host $match.Line.SubString($index, $m.Index - $index) -nonewline
-			Write-Host $m.Value -ForegroundColor Black -BackgroundColor Yellow -nonewline
+			output $match.Line.SubString($index, $m.Index - $index) -nonewline
+			output $m.Value -ForegroundColor Black -BackgroundColor Yellow -nonewline
 			$index = $m.Index + $m.Length
 		}
 		if ($index -lt $match.Line.Length) {
-			Write-Host $match.Line.SubString($index) -nonewline
+			output $match.Line.SubString($index) -nonewline
 		}
-		Write-Host ''
+		output ''
 	}
 	
 	function Write-ContextLines($context, $contextLines) {
@@ -77,4 +102,8 @@ process {
 	$lines = ($match.LineNumber + 1)..($match.LineNumber + $match.Context.DisplayPostContext.Length)
 	Write-ContextLines $match.Context.DisplayPostContext $lines
 }
-end {}
+end {
+    if ($script:buffer.Length -gt 0) {
+        $script:buffer.ToString()
+    }
+}
