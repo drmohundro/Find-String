@@ -13,9 +13,74 @@ SYNOPSIS
 
 
 SYNTAX
-	c:\DTCDev\Personal\Find-String\Find-String.ps1 [-pattern] [<Regex>] 
-	[[-filter] [<String>]] [[-recurse]] [[-caseSensitive]] [[-context] 
-	[<Int32[]>]] [-Verbose] [-Debug] [-ErrorAction [<ActionPreference>]] 
-	[-WarningAction [<ActionPreference>]] [-ErrorVariable [<String>]] 
-	[-WarningVariable [<String>]] [-OutVariable [<String>]] 
-	[-OutBuffer [<Int32>]] [<Common	Parameters>]
+    c:\DTCDev\Personal\Find-String\Find-String.ps1 [-pattern] <Regex> 
+    [[-filter] <String>] [[-path] <String[]>] [-recurse] [-caseSensitive] 
+    [[-context] <Int32[]>] [-passThru] [<CommonParameters>]
+
+
+PARAMETERS
+    -pattern <Regex>
+        Specifies the text to find. Type a string or regular expression.
+
+        Required?                    true
+        Position?                    1
+        Default value
+        Accept pipeline input?       false
+        Accept wildcard characters?
+
+    -filter <String>
+        Specifies the file types to search in. The default is all file types.
+
+        Required?                    false
+        Position?                    2
+        Default value
+        Accept pipeline input?       false
+        Accept wildcard characters?
+
+    -path <String[]>
+        Specifies the path to the files to be searched. Wildcards are permitted. The default location is the
+        local directory.
+
+        Required?                    false
+        Position?                    3
+        Default value
+        Accept pipeline input?       false
+        Accept wildcard characters?
+
+    -recurse [<SwitchParameter>]
+        Gets the items in the specified path and in all child directies. This is the default.
+
+        Required?                    false
+        Position?                    named
+        Default value
+        Accept pipeline input?       false
+        Accept wildcard characters?
+
+    -caseSensitive [<SwitchParameter>]
+        Makes matches case-sensitive. By default, matches are not case-sensitive.
+
+        Required?                    false
+        Position?                    named
+        Default value
+        Accept pipeline input?       false
+        Accept wildcard characters?
+
+    -context <Int32[]>
+        Captures the specified number of lines before and after the line with the match. This allows you to v
+        iew the match in context.
+
+        Required?                    false
+        Position?                    4
+        Default value
+        Accept pipeline input?       false
+        Accept wildcard characters?
+
+    -passThru [<SwitchParameter>]
+        Passes the literal MatchInfo object representing the found match to the pipeline. By default, this cm
+        dlet does not send anything through the object pipeline.
+
+        Required?                    false
+        Position?                    named
+        Default value
+        Accept pipeline input?       false
+        Accept wildcard characters?
