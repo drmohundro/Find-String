@@ -6,7 +6,9 @@
 .Parameter Pattern
     Specifies the text to find. Type a string or regular expression.
 .Parameter Filter
-    Specifies the file types to search in. The default is all file types.
+    Specifies the file types to search in. The default is all file types (*.*).
+.Parameter Include
+    Specifies the file types to search in. This allows you to search across multiple file types (i.e. *.ps1,*.psm1).
 .Parameter Path
     Specifies the path to the files to be searched. Wildcards are permitted. 
     The default location is the local directory.
@@ -29,10 +31,17 @@
     something else, be sure to use this parameter.
 #>
 #requires -version 2
+[CmdletBinding(DefaultParameterSetName="Filter")]
 param ( 
-    [Parameter(Mandatory=$true)] 
+    [Parameter(Position = 0, Mandatory=$true)] 
     [regex] $pattern,
+
+    [Parameter(Position = 1, Mandatory=$true, ParameterSetName="Filter")]
     [string] $filter = "*.*",
+
+    [Parameter(Position = 1, Mandatory=$true, ParameterSetName="Include")]
+    [string[]] $include,
+
     [string[]] $path,
     [switch] $recurse = $true,
     [switch] $caseSensitive = $false,
@@ -45,12 +54,28 @@ if ((-not $caseSensitive) -and (-not $pattern.Options -match "IgnoreCase")) {
     $pattern = New-Object regex $pattern.ToString(),@($pattern.Options,"IgnoreCase")
 }
 
-if ($passThru) {
-    Get-ChildItem -recurse:$recurse -filter:$filter -path $path |
-        Select-String -caseSensitive:$caseSensitive -pattern:$pattern -AllMatches -context $context | 
-}
-else {
-    Get-ChildItem -recurse:$recurse -filter:$filter -path $path |
-        Select-String -caseSensitive:$caseSensitive -pattern:$pattern -AllMatches -context $context | 
-        Out-ColorMatchInfo -pipeOutput:$pipeOutput
+switch ($PsCmdlet.ParameterSetName)
+{
+    'Filter' {
+        if ($passThru) {
+            Get-ChildItem -recurse:$recurse -filter:$filter -path $path |
+                Select-String -caseSensitive:$caseSensitive -pattern:$pattern -AllMatches -context $context | 
+        }
+        else {
+            Get-ChildItem -recurse:$recurse -filter:$filter -path $path |
+                Select-String -caseSensitive:$caseSensitive -pattern:$pattern -AllMatches -context $context | 
+                Out-ColorMatchInfo -pipeOutput:$pipeOutput
+        }
+    }
+    'Include' {
+        if ($passThru) {
+            Get-ChildItem -recurse:$recurse -include:$include -path $path |
+                Select-String -caseSensitive:$caseSensitive -pattern:$pattern -AllMatches -context $context | 
+        }
+        else {
+            Get-ChildItem -recurse:$recurse -include:$include -path $path |
+                Select-String -caseSensitive:$caseSensitive -pattern:$pattern -AllMatches -context $context | 
+                Out-ColorMatchInfo -pipeOutput:$pipeOutput
+        }
+    }
 }

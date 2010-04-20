@@ -1,4 +1,4 @@
-Find-String is a PowerShell script whose purpose is to emulate grep and/or ack. 
+Find-String is a PowerShell script whose purpose is to emulate grep and/or ack.
 PowerShell already has the built-in Select-String cmdlet, but this script wraps
 provides match highlighting on top of the searching capabilities.
 
@@ -6,16 +6,23 @@ It currently highlights matches in a similar style to ack.
 
 
 NAME
-	c:\MyScriptDir\Find-String.ps1
+    c:\MyScriptDir\Find-String.ps1
 
 SYNOPSIS
-	Searches text files by pattern and displays the results.
-
+    Searches text files by pattern and displays the results.
 
 SYNTAX
-    c:\DTCDev\Personal\Find-String\Find-String.ps1 [-pattern] <Regex> 
-    [[-filter] <String>] [[-path] <String[]>] [-recurse] [-caseSensitive] 
-    [[-context] <Int32[]>] [-passThru] [<CommonParameters>]
+    c:\Users\udmohun\Development\Find-String\Find-String.ps1 [-pattern] <Regex> [-filter] <String> [-path <S
+    tring[]>] [-recurse] [-caseSensitive] [-context <Int32[]>] [-passThru] [-pipeOutput] [<CommonParameters>
+    ]
+
+    c:\Users\udmohun\Development\Find-String\Find-String.ps1 [-pattern] <Regex> [-include] <String[]> [-path
+     <String[]>] [-recurse] [-caseSensitive] [-context <Int32[]>] [-passThru] [-pipeOutput] [<CommonParamete
+    rs>]
+
+
+DESCRIPTION
+    Searches text files by pattern and displays the results.
 
 
 PARAMETERS
@@ -29,26 +36,37 @@ PARAMETERS
         Accept wildcard characters?
 
     -filter <String>
-        Specifies the file types to search in. The default is all file types.
+        Specifies the file types to search in. The default is all file types (*.*).
 
-        Required?                    false
+        Required?                    true
+        Position?                    2
+        Default value
+        Accept pipeline input?       false
+        Accept wildcard characters?
+
+    -include <String[]>
+        Specifies the file types to search in. This allows you to search across multiple file types (i.e. *.
+        ps1,*.psm1).
+
+        Required?                    true
         Position?                    2
         Default value
         Accept pipeline input?       false
         Accept wildcard characters?
 
     -path <String[]>
-        Specifies the path to the files to be searched. Wildcards are permitted. The default location is the
-        local directory.
+        Specifies the path to the files to be searched. Wildcards are permitted. 
+        The default location is the local directory.
 
         Required?                    false
-        Position?                    3
+        Position?                    named
         Default value
         Accept pipeline input?       false
         Accept wildcard characters?
 
     -recurse [<SwitchParameter>]
-        Gets the items in the specified path and in all child directies. This is the default.
+        Gets the items in the specified path and in all child directies. This is 
+        the default.
 
         Required?                    false
         Position?                    named
@@ -66,18 +84,33 @@ PARAMETERS
         Accept wildcard characters?
 
     -context <Int32[]>
-        Captures the specified number of lines before and after the line with the match. This allows you to v
-        iew the match in context.
+        Captures the specified number of lines before and after the line with the 
+        match. This allows you to view the match in context.
 
         Required?                    false
-        Position?                    4
+        Position?                    named
         Default value
         Accept pipeline input?       false
         Accept wildcard characters?
 
     -passThru [<SwitchParameter>]
-        Passes the literal MatchInfo object representing the found match to the pipeline. By default, this cm
-        dlet does not send anything through the object pipeline.
+        Passes the literal MatchInfo object representing the found match to the 
+        pipeline. By default, this cmdlet does not send anything through the 
+        object pipeline.
+
+        Required?                    false
+        Position?                    named
+        Default value
+        Accept pipeline input?       false
+        Accept wildcard characters?
+
+    -pipeOutput [<SwitchParameter>]
+        Sends all output along the object pipeline. By default, this command uses 
+        color to help with readability; however, this prevents the output from being 
+        piped to another command. If you wish to pipe the output of this command to
+        something else, be sure to use this parameter.
+
+        requires -version 2
 
         Required?                    false
         Position?                    named
