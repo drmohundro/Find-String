@@ -54,15 +54,41 @@ if ((-not $caseSensitive) -and (-not $pattern.Options -match "IgnoreCase")) {
     $pattern = New-Object regex $pattern.ToString(),@($pattern.Options,"IgnoreCase")
 }
 
+function shouldFilterDirectory {
+    param ($item)
+    
+    # TODO: make this configurable
+    $directoriesToExclude = '\\bin', '\\obj', '\\.git', '\\.hg', '\\.svn'
+
+    if ((Select-String $directoriesToExclude -input $item.DirectoryName) -ne $null) { 
+        return $true 
+    }
+    else {
+        return $false
+    }
+}
+
+function filterExcludes {
+    param ($item)
+
+    if (-not ($item -is [System.IO.FileInfo])) { return $false }
+
+    if (shouldFilterDirectory $item) { return $false }
+
+    return $true
+}
+
 switch ($PsCmdlet.ParameterSetName)
 {
     'Filter' {
         if ($passThru) {
             Get-ChildItem -recurse:$recurse -filter:$filter -path $path |
+                Where { filterExcludes $_ } | 
                 Select-String -caseSensitive:$caseSensitive -pattern:$pattern -AllMatches -context $context | 
         }
         else {
             Get-ChildItem -recurse:$recurse -filter:$filter -path $path |
+                Where { filterExcludes $_ } | 
                 Select-String -caseSensitive:$caseSensitive -pattern:$pattern -AllMatches -context $context | 
                 Out-ColorMatchInfo -pipeOutput:$pipeOutput
         }
@@ -70,10 +96,12 @@ switch ($PsCmdlet.ParameterSetName)
     'Include' {
         if ($passThru) {
             Get-ChildItem -recurse:$recurse -include:$include -path $path |
+                Where { filterExcludes $_ } | 
                 Select-String -caseSensitive:$caseSensitive -pattern:$pattern -AllMatches -context $context | 
         }
         else {
             Get-ChildItem -recurse:$recurse -include:$include -path $path |
+                Where { filterExcludes $_ } | 
                 Select-String -caseSensitive:$caseSensitive -pattern:$pattern -AllMatches -context $context | 
                 Out-ColorMatchInfo -pipeOutput:$pipeOutput
         }
