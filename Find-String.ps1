@@ -8,7 +8,15 @@
 .Parameter Filter
     Specifies the file types to search in. The default is all file types (*.*).
 .Parameter Include
-    Specifies the file types to search in. This allows you to search across multiple file types (i.e. *.ps1,*.psm1).
+    Specifies the file types to search in. This allows you to search across 
+    multiple file types (i.e. *.ps1,*.psm1).
+.Parameter ExcludeFiles
+    Specifies the file types to exclude from searches. If set, this overrides 
+    any global defaults or configuration.
+.Parameter ExcludeDirectories
+    Specifies the directories to exclude from searches. It really only makes 
+    sense for recursive searches. If set, this overrides any global defaults
+    or configuration.
 .Parameter Path
     Specifies the path to the files to be searched. Wildcards are permitted. 
     The default location is the local directory.
@@ -36,12 +44,14 @@ param (
     [Parameter(Position = 0, Mandatory=$true)] 
     [regex] $pattern,
 
-    [Parameter(Position = 1, Mandatory=$true, ParameterSetName="Filter")]
+    [Parameter(Position = 1, ParameterSetName="Filter")]
     [string] $filter = "*.*",
 
-    [Parameter(Position = 1, Mandatory=$true, ParameterSetName="Include")]
+    [Parameter(Position = 1, ParameterSetName="Include")]
     [string[]] $include,
 
+    [string[]] $excludeFiles,
+    [string[]] $excludeDirectories,
     [string[]] $path,
     [switch] $recurse = $true,
     [switch] $caseSensitive = $false,
@@ -54,11 +64,21 @@ if ((-not $caseSensitive) -and (-not $pattern.Options -match "IgnoreCase")) {
     $pattern = New-Object regex $pattern.ToString(),@($pattern.Options,"IgnoreCase")
 }
 
+function directoriesToExclude {
+    if ($excludeDirectories.Length -gt 0) {
+        return $excludeDirectories
+    }
+    else {
+        $defaultExcludedDirectories = 'bin', 'obj', '.git', '.hg', '.svn', '_ReSharper\.'
+        # TODO: make this configurable
+        return $defaultExcludedDirectories
+    }
+}
+
 function shouldFilterDirectory {
     param ($item)
     
-    # TODO: make this configurable
-    $directoriesToExclude = '\\bin', '\\obj', '\\.git', '\\.hg', '\\.svn'
+    $directoriesToExclude = directoriesToExclude | foreach { "\\$_" }
 
     if ((Select-String $directoriesToExclude -input $item.DirectoryName) -ne $null) { 
         return $true 
@@ -72,14 +92,20 @@ function filterExcludes {
     param ($item)
 
     if (-not ($item -is [System.IO.FileInfo])) { return $false }
-
     if (shouldFilterDirectory $item) { return $false }
 
     return $true
 }
 
 function filesToExclude {
-    '*exe', '*pdb', '*dll'
+    if ($excludeFiles.Length -gt 0) {
+        return $excludeFiles
+    }
+    else {
+        # TODO: make this configurable
+        $defaultExcludedFiles = '*exe', '*pdb', '*dll'
+        return $defaultExcludedFiles
+    }
 }
 
 switch ($PsCmdlet.ParameterSetName)
