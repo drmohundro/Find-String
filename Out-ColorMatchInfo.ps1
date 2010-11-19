@@ -40,7 +40,15 @@ process {
             }
         }
         else {
-            Write-Host $str -foregroundColor $foregroundColor -backgroundColor $backgroundColor -noNewLine:$noNewLine
+            $arg = 'Write-Host $str'
+            if (-not($foregroundColor -lt 0)) {
+                $arg += ' -foregroundColor $foregroundColor'
+            }
+            if (-not($backgroundColor -lt 0)) {
+                $arg += ' -backgroundColor $backgroundColor'
+            }
+            $arg += ' -noNewLine:$noNewLine'
+            Invoke-Expression $arg
         }
     }
 
