@@ -114,7 +114,7 @@ switch ($PsCmdlet.ParameterSetName)
         if ($passThru) {
             Get-ChildItem -recurse:$recurse -filter:$filter -path $path -exclude (& filesToExclude) |
                 Where { filterExcludes $_ } | 
-                Select-String -caseSensitive:$caseSensitive -pattern:$pattern -AllMatches -context $context | 
+                Select-String -caseSensitive:$caseSensitive -pattern:$pattern -AllMatches -context $context
         }
         else {
             Get-ChildItem -recurse:$recurse -filter:$filter -path $path -exclude (& filesToExclude) |
@@ -127,7 +127,7 @@ switch ($PsCmdlet.ParameterSetName)
         if ($passThru) {
             Get-ChildItem -recurse:$recurse -include:$include -path $path -exclude (& filesToExclude) |
                 Where { filterExcludes $_ } | 
-                Select-String -caseSensitive:$caseSensitive -pattern:$pattern -AllMatches -context $context | 
+                Select-String -caseSensitive:$caseSensitive -pattern:$pattern -AllMatches -context $context
         }
         else {
             Get-ChildItem -recurse:$recurse -include:$include -path $path -exclude (& filesToExclude) |
