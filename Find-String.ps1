@@ -69,9 +69,24 @@ function directoriesToExclude {
         return $excludeDirectories
     }
     else {
-        $defaultExcludedDirectories = 'bin', 'obj', '.git', '.hg', '.svn', '_ReSharper\.'
-        # TODO: make this configurable
-        return $defaultExcludedDirectories
+        'bin', 'obj', '.git', '.hg', '.svn', '_ReSharper\.'
+
+        if ($global:FindStringDirectoriesToExclude -ne $null) {
+            $global:FindStringDirectoriesToExclude
+        }
+    }
+}
+
+function filesToExclude {
+    if ($excludeFiles.Length -gt 0) {
+        return $excludeFiles
+    }
+    else {
+        '*exe', '*pdb', '*dll', '*.gif', '*.jpg', '*.doc', '*.pdf'
+
+        if ($global:FindStringFileTypesToExclude -ne $null) {
+            $global:FindStringFileTypesToExclude
+        }
     }
 }
 
@@ -81,6 +96,7 @@ function shouldFilterDirectory {
     $directoriesToExclude = directoriesToExclude | foreach { "\\$_" }
 
     if ((Select-String $directoriesToExclude -input $item.DirectoryName) -ne $null) { 
+        Write-Debug "Excluding results from $item"
         return $true 
     }
     else {
@@ -95,17 +111,6 @@ function filterExcludes {
     if (shouldFilterDirectory $item) { return $false }
 
     return $true
-}
-
-function filesToExclude {
-    if ($excludeFiles.Length -gt 0) {
-        return $excludeFiles
-    }
-    else {
-        # TODO: make this configurable
-        $defaultExcludedFiles = '*exe', '*pdb', '*dll'
-        return $defaultExcludedFiles
-    }
 }
 
 switch ($PsCmdlet.ParameterSetName)
