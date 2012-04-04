@@ -2,7 +2,7 @@
 
 Find-String is a PowerShell script whose purpose is to emulate grep and/or ack.
 PowerShell already has the built-in Select-String cmdlet, but this script wraps
-provides match highlighting on top of the searching capabilities.
+Select-String and provides match highlighting on top of the searching capabilities.
 
 It currently highlights matches in a similar style to ack.
 
