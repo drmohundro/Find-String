@@ -12,7 +12,8 @@ Find all usages of `form` in all .cs files:
 
     find-string form *.cs
 
-Find the unique file extensions from all of the files that have the string 'jquery' in them:
+Find the unique file extensions from all of the files that have the string
+'jquery' in them:
 
     find-string jquery -passThru | 
       Select-Object -ExpandProperty Path | 
@@ -21,7 +22,8 @@ Find the unique file extensions from all of the files that have the string 'jque
       ForEach-Object { $_.Groups[1].Value } | 
       Select-Object -Unique
 
-Or the same example using built-in aliases (more succinct, likely reflects more typical usage):
+Or the same example using built-in aliases (more succinct, likely reflects more
+typical usage):
 
     find-string jquery -pass | 
       select -expand path | 
@@ -30,6 +32,12 @@ Or the same example using built-in aliases (more succinct, likely reflects more 
       %{ $_.groups[1].value } | 
       select -uniq
  
+## Installation:
+
+Find-String has [PsGet](http://psget.net/) support - once you have PsGet
+installed, all you have to do is run `Install-Module Find-String` and the
+Find-String command is ready for you.
+
 ## Usage:
 
     NAME
@@ -39,13 +47,13 @@ Or the same example using built-in aliases (more succinct, likely reflects more 
         Searches text files by pattern and displays the results.
 
     SYNTAX
-        c:\Users\udmohun\Development\Find-String\Find-String.ps1 [-pattern] <Regex> [-filter] <String> [-path <S
-        tring[]>] [-recurse] [-caseSensitive] [-context <Int32[]>] [-passThru] [-pipeOutput] [<CommonParameters>
-        ]
+        Find-String [-pattern] <Regex> [-filter] <String> [-path <String[]>] 
+        [-recurse] [-caseSensitive] [-context <Int32[]>] [-passThru] [-pipeOutput] 
+        [<CommonParameters>]
 
-        c:\Users\udmohun\Development\Find-String\Find-String.ps1 [-pattern] <Regex> [-include] <String[]> [-path
-         <String[]>] [-recurse] [-caseSensitive] [-context <Int32[]>] [-passThru] [-pipeOutput] [<CommonParamete
-        rs>]
+        Find-String [-pattern] <Regex> [-include] <String[]> [-path<String[]>] 
+        [-recurse] [-caseSensitive] [-context <Int32[]>] [-passThru] [-pipeOutput] 
+        [<CommonParameters>]
 
 
     DESCRIPTION
