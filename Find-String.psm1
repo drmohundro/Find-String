@@ -1,3 +1,5 @@
+if (Get-Module Find-String) { return }
+
 <#
     Find-String is a PowerShell script whose purpose is to emulate grep and/or ack.
     PowerShell already has the built-in Select-String cmdlet, but this script wraps
