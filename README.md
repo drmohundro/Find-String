@@ -1,42 +1,66 @@
 # Find-String
 
-Find-String is a PowerShell script whose purpose is to emulate grep and/or ack.
-PowerShell already has the built-in Select-String cmdlet, but this script wraps
-Select-String and provides match highlighting on top of the searching capabilities.
+Find-String is a PowerShell script whose purpose is to emulate [grep](http://en.wikipedia.org/wiki/Grep) and/or [ack](http://beyondgrep.com/).
+PowerShell already has the built-in `Select-String` cmdlet, but this script wraps
+`Select-String` and provides match highlighting on top of the searching capabilities.
 
-It currently highlights matches in a similar style to ack.
+It currently highlights matches in a similar style to [ack](http://beyondgrep.com/).
 
 ## Examples:
 
 Find all usages of `form` in all .cs files:
 
-    find-string form *.cs
+```ps1
+find-string form *.cs
+```
 
 Find the unique file extensions from all of the files that have the string
 'jquery' in them:
 
-    find-string jquery -passThru | 
-      Select-Object -ExpandProperty Path | 
-      Select-String '.\.(\w+)$' | 
-      Select-Object -ExpandProperty Matches | 
-      ForEach-Object { $_.Groups[1].Value } | 
-      Select-Object -Unique
+```ps1
+find-string jquery -passThru | 
+    Select-Object -ExpandProperty Path | 
+    Select-String '.\.(\w+)$' | 
+    Select-Object -ExpandProperty Matches | 
+    ForEach-Object { $_.Groups[1].Value } | 
+    Select-Object -Unique
+```
 
 Or the same example using built-in aliases (more succinct, likely reflects more
 typical usage):
 
-    find-string jquery -pass | 
-      select -expand path | 
-      grep '.\.(\w+)$' | 
-      select -expand matches | 
-      %{ $_.groups[1].value } | 
-      select -uniq
+```ps1
+find-string jquery -pass | 
+    select -expand path | 
+    grep '.\.(\w+)$' | 
+    select -expand matches | 
+    %{ $_.groups[1].value } | 
+    select -uniq
+```
  
 ## Installation:
 
-Find-String has [PsGet](http://psget.net/) support - once you have PsGet
-installed, all you have to do is run `Install-Module Find-String` and the
-Find-String command is ready for you.
+### PsGet Install
+
+* Install [PsGet](http://psget.net/)
+* Run `Install-Module Find-String`
+
+See [Find-String on PsGet](http://psget.net/directory/Find-String/) for more details.
+
+### Manual Install
+
+* Clone (or download) the repository to "~/Documents/WindowsPowerShell/Modules/Find-String"
+
+## Alternative Tools
+
+I like options, so I want to ensure everyone is aware of the other tools out there, particularly in Windows (as PowerShell currently only runs in Windows).
+
+* [Grep](http://gnuwin32.sourceforge.net/packages/grep.htm)
+* [Ack](http://beyondgrep.com/) - installable via [Chocolatey](https://chocolatey.org/packages/ack)
+* [The Silver Searcher (aka AG)](http://blog.kowalczyk.info/software/the-silver-searcher-for-windows.html) - fork of the official AG that is built specifically for Windows
+* [The Platinum Searcher (aka PT)](https://github.com/monochromegane/the_platinum_searcher) - text searching tool written in Go, multi-platform
+
+To be honest, Platinum Searcher is my default now because of its speed and its cross platform support. It works great in Windows as well as in Linux and OSX. I do fall back to Find-String often, too.
 
 ## Usage:
 
