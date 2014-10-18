@@ -62,6 +62,12 @@ I like options, so I want to ensure everyone is aware of the other tools out the
 
 To be honest, Platinum Searcher is my default now because of its speed and its cross platform support. It works great in Windows as well as in Linux and OSX. I do fall back to Find-String often, too.
 
+## Editor Integration:
+
+### Vim
+
+See [find-string.vim](https://github.com/drmohundro/find-string.vim). Installation should be a simple `Bundle 'drmohundro/find-string.vim'` if you [Vundle](https://github.com/gmarik/Vundle.vim).
+
 ## Usage:
 
     NAME
