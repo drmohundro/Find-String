@@ -1,5 +1,7 @@
 # Find-String
 
+[![Join the chat at https://gitter.im/drmohundro/Find-String](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/drmohundro/Find-String?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Find-String is a PowerShell script whose purpose is to emulate [grep](http://en.wikipedia.org/wiki/Grep) and/or [ack](http://beyondgrep.com/).
 PowerShell already has the built-in `Select-String` cmdlet, but this script wraps
 `Select-String` and provides match highlighting on top of the searching capabilities.
