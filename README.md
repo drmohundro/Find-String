@@ -106,3 +106,12 @@ See [find-string.vim](https://github.com/drmohundro/find-string.vim). Installati
 	    * `find-string foo *.cs -pipeOutput | clip`
 * `-listMatchesOnly`
     * Returns all files that have matches existing in them, but doesn't display any of the matches themselves.
+
+
+## Changelog
+
+See [CHANGELOG](CHANGELOG.md) for a list of all changes and their corresponding versions.
+
+## License
+
+Find-String is released under the MIT license. See [LICENSE](LICENSE) for details.
