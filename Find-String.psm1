@@ -12,8 +12,8 @@ if (Get-Module Find-String) { return }
 
 function Find-String {
 [CmdletBinding(DefaultParameterSetName="Filter")]
-param ( 
-    [Parameter(Position = 0, Mandatory=$true)] 
+param (
+    [Parameter(Position = 0, Mandatory=$true)]
     [regex] $pattern,
 
     [Parameter(Position = 1, ParameterSetName="Filter")]
@@ -29,7 +29,8 @@ param (
     [switch] $caseSensitive = $false,
     [int[]] $context = 0,
     [switch] $passThru = $false,
-    [switch] $pipeOutput
+    [switch] $pipeOutput,
+    [switch] $listMatchesOnly
 )
 
     if ((-not $caseSensitive) -and (-not $pattern.Options -match "IgnoreCase")) {
@@ -64,12 +65,12 @@ param (
 
     function shouldFilterDirectory {
         param ($item)
-        
+
         $directoriesToExclude = directoriesToExclude | foreach { "\\$_" }
 
-        if ((Select-String $directoriesToExclude -input $item.DirectoryName) -ne $null) { 
+        if ((Select-String $directoriesToExclude -input $item.DirectoryName) -ne $null) {
             Write-Debug "Excluding results from $item"
-            return $true 
+            return $true
         }
         else {
             return $false
@@ -90,26 +91,38 @@ param (
         'Filter' {
             if ($passThru) {
                 Get-ChildItem -recurse:$recurse -filter:$filter -path $path -exclude (& filesToExclude) |
-                    Where { filterExcludes $_ } | 
+                    Where { filterExcludes $_ } |
                     Select-String -caseSensitive:$caseSensitive -pattern:$pattern -AllMatches -context $context
+            }
+            elseif ($listMatchesOnly) {
+                Get-ChildItem -recurse:$recurse -filter:$filter -path $path -exclude (& filesToExclude) |
+                    Where { filterExcludes $_ } |
+                    Select-String -caseSensitive:$caseSensitive -pattern:$pattern -List |
+                    Select-Object -ExpandProperty Path
             }
             else {
                 Get-ChildItem -recurse:$recurse -filter:$filter -path $path -exclude (& filesToExclude) |
-                    Where { filterExcludes $_ } | 
-                    Select-String -caseSensitive:$caseSensitive -pattern:$pattern -AllMatches -context $context | 
+                    Where { filterExcludes $_ } |
+                    Select-String -caseSensitive:$caseSensitive -pattern:$pattern -AllMatches -context $context |
                     Out-ColorMatchInfo -pipeOutput:$pipeOutput
             }
         }
         'Include' {
             if ($passThru) {
                 Get-ChildItem -recurse:$recurse -include:$include -path $path -exclude (& filesToExclude) |
-                    Where { filterExcludes $_ } | 
+                    Where { filterExcludes $_ } |
                     Select-String -caseSensitive:$caseSensitive -pattern:$pattern -AllMatches -context $context
+            }
+            elseif ($listMatchesOnly) {
+                Get-ChildItem -recurse:$recurse -include:$include -path $path -exclude (& filesToExclude) |
+                    Where { filterExcludes $_ } |
+                    Select-String -caseSensitive:$caseSensitive -pattern:$pattern -AllMatches -context $context |
+                    Select-Object -ExpandProperty Path
             }
             else {
                 Get-ChildItem -recurse:$recurse -include:$include -path $path -exclude (& filesToExclude) |
-                    Where { filterExcludes $_ } | 
-                    Select-String -caseSensitive:$caseSensitive -pattern:$pattern -AllMatches -context $context | 
+                    Where { filterExcludes $_ } |
+                    Select-String -caseSensitive:$caseSensitive -pattern:$pattern -AllMatches -context $context |
                     Out-ColorMatchInfo -pipeOutput:$pipeOutput
             }
         }
@@ -125,42 +138,45 @@ param (
 .Parameter Filter
     Specifies the file types to search in. The default is all file types (*.*).
 .Parameter Include
-    Specifies the file types to search in. This allows you to search across 
+    Specifies the file types to search in. This allows you to search across
     multiple file types (i.e. *.ps1,*.psm1).
 .Parameter ExcludeFiles
-    Specifies the file types to exclude from searches. If set, this overrides 
+    Specifies the file types to exclude from searches. If set, this overrides
     any global defaults or configuration.
 .Parameter ExcludeDirectories
-    Specifies the directories to exclude from searches. It really only makes 
+    Specifies the directories to exclude from searches. It really only makes
     sense for recursive searches. If set, this overrides any global defaults
     or configuration.
 .Parameter Path
-    Specifies the path to the files to be searched. Wildcards are permitted. 
+    Specifies the path to the files to be searched. Wildcards are permitted.
     The default location is the local directory.
 .Parameter Recurse
-    Gets the items in the specified path and in all child directies. This is 
-    the default. 
+    Gets the items in the specified path and in all child directies. This is
+    the default.
 .Parameter CaseSensitive
     Makes matches case-sensitive. By default, matches are not case-sensitive.
 .Parameter Context
-    Captures the specified number of lines before and after the line with the 
+    Captures the specified number of lines before and after the line with the
     match. This allows you to view the match in context.
 .Parameter PassThru
-    Passes the literal MatchInfo object representing the found match to the 
-    pipeline. By default, this cmdlet does not send anything through the 
+    Passes the literal MatchInfo object representing the found match to the
+    pipeline. By default, this cmdlet does not send anything through the
     object pipeline.
 .Parameter PipeOutput
-    Sends all output along the object pipeline. By default, this command uses 
-    color to help with readability; however, this prevents the output from being 
+    Sends all output along the object pipeline. By default, this command uses
+    color to help with readability; however, this prevents the output from being
     piped to another command. If you wish to pipe the output of this command to
     something else, be sure to use this parameter.
+.Parameter ListMatchesOnly
+    Returns all files that have matches existing in them, but doesn't display
+    any of the matches themselves.
 #>
 }
 
 function Out-ColorMatchInfo {
-param ( 
-    [Parameter(Mandatory=$true, ValueFromPipeline=$true)] 
-    [Microsoft.PowerShell.Commands.MatchInfo] 
+param (
+    [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
+    [Microsoft.PowerShell.Commands.MatchInfo]
     $match,
 
     [switch]
@@ -176,11 +192,11 @@ param (
 
         $script:buffer = New-Object System.Text.StringBuilder
     }
-    process { 
+    process {
         function output {
             param (
-                [string] $str, 
-                $foregroundColor = $host.ui.RawUI.ForegroundColor, 
+                [string] $str,
+                $foregroundColor = $host.ui.RawUI.ForegroundColor,
                 $backgroundColor = $host.ui.RawUI.BackgroundColor,
                 [switch] $noNewLine
             )
@@ -207,8 +223,8 @@ param (
 
         function Get-RelativePath([string] $path) {
             $path = $path.Replace($pwd.Path, '')
-            if ($path.StartsWith('\') -and (-not $path.StartsWith('\\'))) { 
-                $path = $path.Substring(1) 
+            if ($path.StartsWith('\') -and (-not $path.StartsWith('\\'))) {
+                $path = $path.Substring(1)
             }
             $path
         }
@@ -220,8 +236,8 @@ param (
                 $script:priorPath = $match.Path
             }
             else {
-                if ($script:hasContext) { 
-                    output '--' 
+                if ($script:hasContext) {
+                    output '--'
                 }
             }
         }

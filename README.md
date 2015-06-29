@@ -8,7 +8,7 @@ PowerShell already has the built-in `Select-String` cmdlet, but this script wrap
 
 It currently highlights matches in a similar style to [ack](http://beyondgrep.com/).
 
-## Examples:
+## Examples
 
 Find all usages of `form` in all .cs files:
 
@@ -20,11 +20,11 @@ Find the unique file extensions from all of the files that have the string
 'jquery' in them:
 
 ```ps1
-find-string jquery -passThru | 
-    Select-Object -ExpandProperty Path | 
-    Select-String '.\.(\w+)$' | 
-    Select-Object -ExpandProperty Matches | 
-    ForEach-Object { $_.Groups[1].Value } | 
+find-string jquery -passThru |
+    Select-Object -ExpandProperty Path |
+    Select-String '.\.(\w+)$' |
+    Select-Object -ExpandProperty Matches |
+    ForEach-Object { $_.Groups[1].Value } |
     Select-Object -Unique
 ```
 
@@ -32,15 +32,15 @@ Or the same example using built-in aliases (more succinct, likely reflects more
 typical usage):
 
 ```ps1
-find-string jquery -pass | 
-    select -expand path | 
-    grep '.\.(\w+)$' | 
-    select -expand matches | 
-    %{ $_.groups[1].value } | 
+find-string jquery -pass |
+    select -expand path |
+    grep '.\.(\w+)$' |
+    select -expand matches |
+    %{ $_.groups[1].value } |
     select -uniq
 ```
- 
-## Installation:
+
+## Installation
 
 ### PsGet Install
 
@@ -64,123 +64,45 @@ I like options, so I want to ensure everyone is aware of the other tools out the
 
 To be honest, Platinum Searcher is my default now because of its speed and its cross platform support. It works great in Windows as well as in Linux and OSX. I do fall back to Find-String often, too.
 
-## Editor Integration:
+## Editor Integration
 
 ### Vim
 
 See [find-string.vim](https://github.com/drmohundro/find-string.vim). Installation should be a simple `Bundle 'drmohundro/find-string.vim'` if you [Vundle](https://github.com/gmarik/Vundle.vim).
 
-## Usage:
+## Options
 
-    NAME
-        c:\MyScriptDir\Find-String.ps1
-
-    SYNOPSIS
-        Searches text files by pattern and displays the results.
-
-    SYNTAX
-        Find-String [-pattern] <Regex> [-filter] <String> [-path <String[]>] 
-        [-recurse] [-caseSensitive] [-context <Int32[]>] [-passThru] [-pipeOutput] 
-        [<CommonParameters>]
-
-        Find-String [-pattern] <Regex> [-include] <String[]> [-path<String[]>] 
-        [-recurse] [-caseSensitive] [-context <Int32[]>] [-passThru] [-pipeOutput] 
-        [<CommonParameters>]
-
-
-    DESCRIPTION
-        Searches text files by pattern and displays the results.
-
-
-    PARAMETERS
-        -pattern <Regex>
-            Specifies the text to find. Type a string or regular expression.
-
-            Required?                    true
-            Position?                    1
-            Default value
-            Accept pipeline input?       false
-            Accept wildcard characters?
-
-        -filter <String>
-            Specifies the file types to search in. The default is all file types (*.*).
-
-            Required?                    true
-            Position?                    2
-            Default value
-            Accept pipeline input?       false
-            Accept wildcard characters?
-
-        -include <String[]>
-            Specifies the file types to search in. This allows you to search across multiple file types (i.e. *.
-            ps1,*.psm1).
-
-            Required?                    true
-            Position?                    2
-            Default value
-            Accept pipeline input?       false
-            Accept wildcard characters?
-
-        -path <String[]>
-            Specifies the path to the files to be searched. Wildcards are permitted. 
-            The default location is the local directory.
-
-            Required?                    false
-            Position?                    named
-            Default value
-            Accept pipeline input?       false
-            Accept wildcard characters?
-
-        -recurse [<SwitchParameter>]
-            Gets the items in the specified path and in all child directies. This is 
-            the default.
-
-            Required?                    false
-            Position?                    named
-            Default value
-            Accept pipeline input?       false
-            Accept wildcard characters?
-
-        -caseSensitive [<SwitchParameter>]
-            Makes matches case-sensitive. By default, matches are not case-sensitive.
-
-            Required?                    false
-            Position?                    named
-            Default value
-            Accept pipeline input?       false
-            Accept wildcard characters?
-
-        -context <Int32[]>
-            Captures the specified number of lines before and after the line with the 
-            match. This allows you to view the match in context.
-
-            Required?                    false
-            Position?                    named
-            Default value
-            Accept pipeline input?       false
-            Accept wildcard characters?
-
-        -passThru [<SwitchParameter>]
-            Passes the literal MatchInfo object representing the found match to the 
-            pipeline. By default, this cmdlet does not send anything through the 
-            object pipeline.
-
-            Required?                    false
-            Position?                    named
-            Default value
-            Accept pipeline input?       false
-            Accept wildcard characters?
-
-        -pipeOutput [<SwitchParameter>]
-            Sends all output along the object pipeline. By default, this command uses 
-            color to help with readability; however, this prevents the output from being 
-            piped to another command. If you wish to pipe the output of this command to
-            something else, be sure to use this parameter.
-
-            requires -version 2
-
-            Required?                    false
-            Position?                    named
-            Default value
-            Accept pipeline input?       false
-            Accept wildcard characters?
+* `-pattern`
+	* Specifies the text to find. Type a string or regular expression.
+	* Required
+* `-filter`
+    * Specifies the file types to search in. The default is all file types (\*.\*).
+* `-include`
+    * Specifies the file types to search in. This allows you to search across multiple file types (i.e. \*.ps1,\*.psm1).
+* `-excludeFiles`
+    * Specifies the file types to exclude from searches. If set, this overrides any global defaults or configuration.
+    * Comma-separated list of files to exclude from the search
+* `-excludeDirectories`
+    * Specifies the directories to exclude from searches. It really only makes sense for recursive searches. If set, this overrides any global defaults or configuration.
+    * Comma-separated list of directories to exclude from the search
+* `-path`
+    * Specifies the path to the files to be searched. Wildcards are permitted. The default location is the local directory.
+* `-recurse`
+    * Gets the items in the specified path and in all child directies. This is the default.
+* `-caseSensitive`
+    * Makes matches case-sensitive. By default, matches are not case-sensitive.
+* `-context`
+    * Captures the specified number of lines before and after the line with the match. This allows you to view the match in context.
+    * Example:
+	    * `find-string foo *.cs -context 2,3`
+	    * Would return a context of 2 lines before the match and 3 lines after the match
+* `-passThru`
+    * Passes the literal `MatchInfo` object representing the found match to the pipeline. By default, this cmdlet does not send anything through the object pipeline.
+    * This is useful if you wish to do additional processing on the results, such as collect any matches in a regular expression that you searched for or to gather unique results.
+* `-pipeOutput`
+    * Sends all output along the object pipeline. By default, this command uses color to help with readability; however, this prevents the output from being piped to another command. If you wish to pipe the output of this command to something else, be sure to use this parameter.
+    * This is useful if you wish to pipe the output to the clipboard.
+    * Example:
+	    * `find-string foo *.cs -pipeOutput | clip`
+* `-listMatchesOnly`
+    * Returns all files that have matches existing in them, but doesn't display any of the matches themselves.
