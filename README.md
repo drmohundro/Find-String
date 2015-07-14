@@ -42,6 +42,14 @@ find-string jquery -pass |
 
 ## Installation
 
+### PowerShell Gallery Install
+
+NOTE: This method of installation requires PowerShell v5 which is currently in beta.
+
+* Run `Install-Module Find-String`
+
+See [Find-String on PowerShell Gallery](https://www.powershellgallery.com/packages/Find-String/).
+
 ### PsGet Install
 
 * Install [PsGet](http://psget.net/)
@@ -73,8 +81,8 @@ See [find-string.vim](https://github.com/drmohundro/find-string.vim). Installati
 ## Options
 
 * `-pattern`
-	* Specifies the text to find. Type a string or regular expression.
-	* Required
+    * Specifies the text to find. Type a string or regular expression.
+    * Required
 * `-filter`
     * Specifies the file types to search in. The default is all file types (\*.\*).
 * `-include`
@@ -94,8 +102,8 @@ See [find-string.vim](https://github.com/drmohundro/find-string.vim). Installati
 * `-context`
     * Captures the specified number of lines before and after the line with the match. This allows you to view the match in context.
     * Example:
-	    * `find-string foo *.cs -context 2,3`
-	    * Would return a context of 2 lines before the match and 3 lines after the match
+        * `find-string foo *.cs -context 2,3`
+        * Would return a context of 2 lines before the match and 3 lines after the match
 * `-passThru`
     * Passes the literal `MatchInfo` object representing the found match to the pipeline. By default, this cmdlet does not send anything through the object pipeline.
     * This is useful if you wish to do additional processing on the results, such as collect any matches in a regular expression that you searched for or to gather unique results.
@@ -103,7 +111,7 @@ See [find-string.vim](https://github.com/drmohundro/find-string.vim). Installati
     * Sends all output along the object pipeline. By default, this command uses color to help with readability; however, this prevents the output from being piped to another command. If you wish to pipe the output of this command to something else, be sure to use this parameter.
     * This is useful if you wish to pipe the output to the clipboard.
     * Example:
-	    * `find-string foo *.cs -pipeOutput | clip`
+        * `find-string foo *.cs -pipeOutput | clip`
 * `-listMatchesOnly`
     * Returns all files that have matches existing in them, but doesn't display any of the matches themselves.
 
