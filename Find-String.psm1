@@ -1,4 +1,4 @@
-if (Get-Module Find-String) { return }
+if (Get-Module -Name Find-String) { return }
 
 <#
     Find-String is a PowerShell script whose purpose is to emulate grep and/or ack.
@@ -20,21 +20,21 @@ param (
     [string] $filter = "*.*",
 
     [Parameter(Position = 1, ParameterSetName="Include")]
-    [string[]] $include,
+    [string[]] $include = @(),
 
-    [string[]] $excludeFiles,
-    [string[]] $excludeDirectories,
-    [string[]] $path,
+    [string[]] $excludeFiles = @(),
+    [string[]] $excludeDirectories = @(),
+    [string[]] $path = @(),
     [switch] $recurse = $true,
     [switch] $caseSensitive = $false,
     [int[]] $context = 0,
     [switch] $passThru = $false,
-    [switch] $pipeOutput,
-    [switch] $listMatchesOnly
+    [switch] $pipeOutput = $false,
+    [switch] $listMatchesOnly = $false
 )
 
     if ((-not $caseSensitive) -and (-not $pattern.Options -match "IgnoreCase")) {
-        $pattern = New-Object regex $pattern.ToString(),@($pattern.Options,"IgnoreCase")
+        $pattern = New-Object -TypeName regex -Property $pattern.ToString(),@($pattern.Options,"IgnoreCase")
     }
 
     function directoriesToExclude {
@@ -64,12 +64,15 @@ param (
     }
 
     function shouldFilterDirectory {
-        param ($item)
+        param (
+            [Parameter(Mandatory=$true)]
+            $item
+        )
 
-        $directoriesToExclude = directoriesToExclude | foreach { "\\$_" }
+        $directoriesToExclude = directoriesToExclude | ForEach-Object { "\\$_" }
 
-        if ((Select-String $directoriesToExclude -input $item.DirectoryName) -ne $null) {
-            Write-Debug "Excluding results from $item"
+        if ((Select-String -Pattern $directoriesToExclude -input $item.DirectoryName) -ne $null) {
+            Write-Debug -Message "Excluding results from $item"
             return $true
         }
         else {
@@ -78,7 +81,10 @@ param (
     }
 
     function filterExcludes {
-        param ($item)
+        param (
+            [Parameter(Mandatory=$true)]
+            $item
+        )
 
         if (-not ($item -is [System.IO.FileInfo])) { return $false }
         if (shouldFilterDirectory $item) { return $false }
@@ -91,18 +97,18 @@ param (
         'Filter' {
             if ($passThru) {
                 Get-ChildItem -recurse:$recurse -filter:$filter -path $path -exclude (& filesToExclude) |
-                    Where { filterExcludes $_ } |
+                    Where-Object { filterExcludes $_ } |
                     Select-String -caseSensitive:$caseSensitive -pattern:$pattern -AllMatches -context $context
             }
             elseif ($listMatchesOnly) {
                 Get-ChildItem -recurse:$recurse -filter:$filter -path $path -exclude (& filesToExclude) |
-                    Where { filterExcludes $_ } |
+                    Where-Object { filterExcludes $_ } |
                     Select-String -caseSensitive:$caseSensitive -pattern:$pattern -List |
                     Select-Object -ExpandProperty Path
             }
             else {
                 Get-ChildItem -recurse:$recurse -filter:$filter -path $path -exclude (& filesToExclude) |
-                    Where { filterExcludes $_ } |
+                    Where-Object { filterExcludes $_ } |
                     Select-String -caseSensitive:$caseSensitive -pattern:$pattern -AllMatches -context $context |
                     Out-ColorMatchInfo -pipeOutput:$pipeOutput
             }
@@ -110,18 +116,18 @@ param (
         'Include' {
             if ($passThru) {
                 Get-ChildItem -recurse:$recurse -include:$include -path $path -exclude (& filesToExclude) |
-                    Where { filterExcludes $_ } |
+                    Where-Object { filterExcludes $_ } |
                     Select-String -caseSensitive:$caseSensitive -pattern:$pattern -AllMatches -context $context
             }
             elseif ($listMatchesOnly) {
                 Get-ChildItem -recurse:$recurse -include:$include -path $path -exclude (& filesToExclude) |
-                    Where { filterExcludes $_ } |
+                    Where-Object { filterExcludes $_ } |
                     Select-String -caseSensitive:$caseSensitive -pattern:$pattern -AllMatches -context $context |
                     Select-Object -ExpandProperty Path
             }
             else {
                 Get-ChildItem -recurse:$recurse -include:$include -path $path -exclude (& filesToExclude) |
-                    Where { filterExcludes $_ } |
+                    Where-Object { filterExcludes $_ } |
                     Select-String -caseSensitive:$caseSensitive -pattern:$pattern -AllMatches -context $context |
                     Out-ColorMatchInfo -pipeOutput:$pipeOutput
             }
@@ -180,26 +186,31 @@ param (
     $match,
 
     [switch]
-    $onlyShowMatches,
+    $onlyShowMatches = $false,
 
     [switch]
-    $pipeOutput
+    $pipeOutput = $false
 )
 
     begin {
         $script:priorPath = ''
         $script:hasContext = $false
 
-        $script:buffer = New-Object System.Text.StringBuilder
+        $script:buffer = New-Object -TypeName System.Text.StringBuilder
     }
     process {
         function output {
             param (
-                [string] $str,
+                [string]
+                $str = '',
+
                 $foregroundColor = $host.ui.RawUI.ForegroundColor,
                 $backgroundColor = $host.ui.RawUI.BackgroundColor,
-                [switch] $noNewLine
+
+                [switch]
+                $noNewLine = $false
             )
+
             if ($pipeOutput) {
                 if ($noNewLine) {
                     $script:buffer.Append($str) | out-null
@@ -209,19 +220,18 @@ param (
                 }
             }
             else {
-                $arg = 'Write-Host $str'
+                $args = @{ Object = $str; NoNewLine = $NoNewLine }
                 if (-not($foregroundColor -lt 0)) {
-                    $arg += ' -foregroundColor $foregroundColor'
+                    $args.Add('ForegroundColor', $foregroundColor)
                 }
                 if (-not($backgroundColor -lt 0)) {
-                    $arg += ' -backgroundColor $backgroundColor'
+                    $args.Add('BackgroundColor', $backgroundColor)
                 }
-                $arg += ' -noNewLine:$noNewLine'
-                Invoke-Expression $arg
+                Write-Host @args
             }
         }
 
-        function Get-RelativePath([string] $path) {
+        function Get-RelativePath([string] $path = '') {
             $path = $path.Replace($pwd.Path, '')
             if ($path.StartsWith('\') -and (-not $path.StartsWith('\\'))) {
                 $path = $path.Substring(1)
@@ -258,7 +268,12 @@ param (
             output ''
         }
 
-        function Write-ContextLines($context, $contextLines) {
+        function Write-Context {
+            param (
+                $context = '',
+                $contextLines = ''
+            )
+
             if ($context.length -eq $null) {return}
 
             $script:hasContext = $true
@@ -272,12 +287,12 @@ param (
         }
 
         $lines = ($match.LineNumber - $match.Context.DisplayPreContext.Length)..($match.LineNumber - 1)
-        Write-ContextLines $match.Context.DisplayPreContext $lines
+        Write-Context $match.Context.DisplayPreContext $lines
 
         Write-HighlightedMatch $match
 
         $lines = ($match.LineNumber + 1)..($match.LineNumber + $match.Context.DisplayPostContext.Length)
-        Write-ContextLines $match.Context.DisplayPostContext $lines
+        Write-Context $match.Context.DisplayPostContext $lines
 
         if ($script:buffer.Length -gt 0) {
             $script:buffer.ToString()
@@ -293,5 +308,5 @@ param (
 #>
 }
 
-Export-ModuleMember Find-String
-Export-ModuleMember Out-ColorMatchInfo
+Export-ModuleMember -Function Find-String
+Export-ModuleMember -Function Out-ColorMatchInfo

@@ -2,6 +2,15 @@
 
 This project adheres to [Semantic Versioning](http://semver.org).
 
+## [1.7.1] - 2016-07-14
+### Added
+
+- Added `Find-String.psd1` for support with the [PowerShellGallery](https://www.powershellgallery.com).
+
+### Changed
+
+- Modified script to align more closely with recommendations from [PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer/).
+
 ## [1.7.0] - 2016-06-29
 ### Added
 
@@ -40,7 +49,7 @@ This project adheres to [Semantic Versioning](http://semver.org).
 ## [1.3.0] - 2010-04-20
 ### Added
 
-- Added `-include` parameter in addition to the existing `-filter` parameter. 
+- Added `-include` parameter in addition to the existing `-filter` parameter.
 
 ## [1.2.0] - 2010-02-16
 ### Added
@@ -59,6 +68,7 @@ This project adheres to [Semantic Versioning](http://semver.org).
 - Initial version of `Find-String` based on [Wes Haggard's original version](http://weblogs.asp.net/whaggard/powershell-script-to-find-strings-and-highlight-them-in-the-output).
 - Requires PowerShell v2.
 
+[1.7.1]: https://github.com/drmohundro/Find-String/compare/1.7.0...1.7.1
 [1.7.0]: https://github.com/drmohundro/Find-String/compare/1.6.1...1.7.0
 [1.6.1]: https://github.com/drmohundro/Find-String/compare/1.6.0...1.6.1
 [1.6.0]: https://github.com/drmohundro/Find-String/compare/1.5.0...1.6.0
