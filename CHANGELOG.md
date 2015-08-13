@@ -2,7 +2,7 @@
 
 This project adheres to [Semantic Versioning](http://semver.org).
 
-## [1.7.1] - 2016-07-14
+## [1.7.1] - 2015-07-14
 ### Added
 
 - Added `Find-String.psd1` for support with the [PowerShellGallery](https://www.powershellgallery.com).
@@ -11,7 +11,7 @@ This project adheres to [Semantic Versioning](http://semver.org).
 
 - Modified script to align more closely with recommendations from [PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer/).
 
-## [1.7.0] - 2016-06-29
+## [1.7.0] - 2015-06-29
 ### Added
 
 - Added `listMatchesOnly` which will display all files that have matches in them (but won't actually display the matches).
