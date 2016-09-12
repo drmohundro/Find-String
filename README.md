@@ -44,11 +44,16 @@ find-string jquery -pass |
 
 ### PowerShell Gallery Install
 
-NOTE: This method of installation requires PowerShell v5 which is currently in beta.
+This method of installation requires PowerShell v5 or higher.
 
 * Run `Install-Module Find-String`
 
 See [Find-String on PowerShell Gallery](https://www.powershellgallery.com/packages/Find-String/).
+
+NOTE: For non-Windows platforms (e.g. OSX, Linux), there is an issue in
+v6.0.0-alpha.9 that prevents modules from being installed using
+`Install-Module`. If you wish to use Find-String on those platforms, it does
+work but you will need to install manually at the moment.
 
 ### PsGet Install
 
@@ -63,14 +68,12 @@ See [Find-String on PsGet](http://psget.net/directory/Find-String/) for more det
 
 ## Alternative Tools
 
-I like options, so I want to ensure everyone is aware of the other tools out there, particularly in Windows (as PowerShell currently only runs in Windows).
+I like options, so I want to ensure everyone is aware of the other tools out there.
 
 * [Grep](http://gnuwin32.sourceforge.net/packages/grep.htm)
 * [Ack](http://beyondgrep.com/) - installable via [Chocolatey](https://chocolatey.org/packages/ack)
 * [The Silver Searcher (aka AG)](http://blog.kowalczyk.info/software/the-silver-searcher-for-windows.html) - fork of the official AG that is built specifically for Windows
 * [The Platinum Searcher (aka PT)](https://github.com/monochromegane/the_platinum_searcher) - text searching tool written in Go, multi-platform
-
-To be honest, Platinum Searcher is my default now because of its speed and its cross platform support. It works great in Windows as well as in Linux and OSX. I do fall back to Find-String often, too.
 
 ## Editor Integration
 
