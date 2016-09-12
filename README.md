@@ -50,10 +50,9 @@ This method of installation requires PowerShell v5 or higher.
 
 See [Find-String on PowerShell Gallery](https://www.powershellgallery.com/packages/Find-String/).
 
-NOTE: For non-Windows platforms (e.g. OSX, Linux), there is an issue in
-v6.0.0-alpha.9 that prevents modules from being installed using
-`Install-Module`. If you wish to use Find-String on those platforms, it does
-work but you will need to install manually at the moment.
+NOTE: For non-Windows platforms (e.g. OSX, Linux), there is [an issue in v6.0.0-alpha.9](https://github.com/PowerShell/PowerShell/blob/master/docs/KNOWNISSUES.md#installing-software-using-packagemanagement-and-powershellget-modules)
+that prevents modules from being installed using `Install-Module`. If you wish to use Find-String on
+those platforms, it does work but you will need to install manually at the moment.
 
 ### PsGet Install
 
