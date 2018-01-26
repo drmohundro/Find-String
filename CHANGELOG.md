@@ -2,6 +2,11 @@
 
 This project adheres to [Semantic Versioning](http://semver.org).
 
+## [1.7.2] - 2018-01-25
+### Changed
+
+- Changed tags for better support in the [PowerShellGallery](https://www.powershellgallery.com).
+
 ## [1.7.1] - 2015-07-14
 ### Added
 

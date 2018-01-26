@@ -11,30 +11,30 @@ if (Get-Module -Name Find-String) { return }
 #requires -version 2
 
 function Find-String {
-[CmdletBinding(DefaultParameterSetName="Filter")]
-param (
-    [Parameter(Position = 0, Mandatory=$true)]
-    [regex] $pattern,
+    [CmdletBinding(DefaultParameterSetName = "Filter")]
+    param (
+        [Parameter(Position = 0, Mandatory = $true)]
+        [regex] $pattern,
 
-    [Parameter(Position = 1, ParameterSetName="Filter")]
-    [string] $filter = "*.*",
+        [Parameter(Position = 1, ParameterSetName = "Filter")]
+        [string] $filter = "*.*",
 
-    [Parameter(Position = 1, ParameterSetName="Include")]
-    [string[]] $include = @(),
+        [Parameter(Position = 1, ParameterSetName = "Include")]
+        [string[]] $include = @(),
 
-    [string[]] $excludeFiles = @(),
-    [string[]] $excludeDirectories = @(),
-    [string[]] $path = @(),
-    [switch] $recurse = $true,
-    [switch] $caseSensitive = $false,
-    [int[]] $context = 0,
-    [switch] $passThru = $false,
-    [switch] $pipeOutput = $false,
-    [switch] $listMatchesOnly = $false
-)
+        [string[]] $excludeFiles = @(),
+        [string[]] $excludeDirectories = @(),
+        [string[]] $path = @(),
+        [switch] $recurse = $true,
+        [switch] $caseSensitive = $false,
+        [int[]] $context = 0,
+        [switch] $passThru = $false,
+        [switch] $pipeOutput = $false,
+        [switch] $listMatchesOnly = $false
+    )
 
     if ((-not $caseSensitive) -and (-not $pattern.Options -match "IgnoreCase")) {
-        $pattern = New-Object -TypeName regex -Property $pattern.ToString(),@($pattern.Options,"IgnoreCase")
+        $pattern = New-Object -TypeName regex -Property $pattern.ToString(), @($pattern.Options, "IgnoreCase")
     }
 
     function directoriesToExclude {
@@ -65,7 +65,7 @@ param (
 
     function shouldFilterDirectory {
         param (
-            [Parameter(Mandatory=$true)]
+            [Parameter(Mandatory = $true)]
             $item
         )
 
@@ -82,7 +82,7 @@ param (
 
     function filterExcludes {
         param (
-            [Parameter(Mandatory=$true)]
+            [Parameter(Mandatory = $true)]
             $item
         )
 
@@ -92,8 +92,7 @@ param (
         return $true
     }
 
-    switch ($PsCmdlet.ParameterSetName)
-    {
+    switch ($PsCmdlet.ParameterSetName) {
         'Filter' {
             if ($passThru) {
                 Get-ChildItem -recurse:$recurse -filter:$filter -path $path -exclude (& filesToExclude) |
@@ -134,7 +133,7 @@ param (
         }
     }
 
-<#
+    <#
 .Synopsis
     Searches text files by pattern and displays the results.
 .Description
@@ -180,17 +179,17 @@ param (
 }
 
 function Out-ColorMatchInfo {
-param (
-    [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
-    [Microsoft.PowerShell.Commands.MatchInfo]
-    $match,
+    param (
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
+        [Microsoft.PowerShell.Commands.MatchInfo]
+        $match,
 
-    [switch]
-    $onlyShowMatches = $false,
+        [switch]
+        $onlyShowMatches = $false,
 
-    [switch]
-    $pipeOutput = $false
-)
+        [switch]
+        $pipeOutput = $false
+    )
 
     begin {
         $script:priorPath = ''
@@ -300,7 +299,7 @@ param (
     }
     end {}
 
-<#
+    <#
 .Synopsis
     Highlights MatchInfo objects similar to the output from ack.
 .Description
