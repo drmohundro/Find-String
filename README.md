@@ -8,6 +8,8 @@ PowerShell already has the built-in `Select-String` cmdlet, but this script wrap
 
 It currently highlights matches in a similar style to [ack](http://beyondgrep.com/).
 
+![screenshot](https://user-images.githubusercontent.com/43072/60065075-2051e200-96f2-11e9-90fe-97f2278942ff.png)
+
 ## Examples
 
 Find all usages of `form` in all .cs files:
@@ -34,7 +36,7 @@ typical usage):
 ```ps1
 find-string jquery -pass |
     select -expand path |
-    grep '.\.(\w+)$' |
+    select-string '.\.(\w+)$' |
     select -expand matches |
     %{ $_.groups[1].value } |
     select -uniq
@@ -50,10 +52,6 @@ This method of installation requires PowerShell v5 or higher.
 
 See [Find-String on PowerShell Gallery](https://www.powershellgallery.com/packages/Find-String/).
 
-NOTE: For non-Windows platforms (e.g. OSX, Linux), there is [an issue in v6.0.0-alpha.9](https://github.com/PowerShell/PowerShell/blob/master/docs/KNOWNISSUES.md#installing-software-using-packagemanagement-and-powershellget-modules)
-that prevents modules from being installed using `Install-Module`. If you wish to use Find-String on
-those platforms, it does work but you will need to install manually at the moment.
-
 ### PsGet Install
 
 * Install [PsGet](http://psget.net/)
@@ -63,22 +61,30 @@ See [Find-String on PsGet](http://psget.net/directory/Find-String/) for more det
 
 ### Manual Install
 
-* Clone (or download) the repository to "~/Documents/WindowsPowerShell/Modules/Find-String"
+Clone (or download) the repository to:
+
+* If PowerShell 5
+    * `~/Documents/WindowsPowerShell/Modules/Find-String`
+* If PowerShell Core on Windows
+    * `~/Documents/PowerShell/Modules/Find-String`
+* If Mac/Linux
+    * `~/.local/share/powershell/Modules/Find-String`
 
 ## Alternative Tools
 
-I like options, so I want to ensure everyone is aware of the other tools out there.
+I like options, so I want to ensure everyone is aware of the other tools out there. My current preferred tool is RipGrep.
 
-* [Grep](http://gnuwin32.sourceforge.net/packages/grep.htm)
-* [Ack](http://beyondgrep.com/) - installable via [Chocolatey](https://chocolatey.org/packages/ack)
-* [The Silver Searcher (aka AG)](http://blog.kowalczyk.info/software/the-silver-searcher-for-windows.html) - fork of the official AG that is built specifically for Windows
-* [The Platinum Searcher (aka PT)](https://github.com/monochromegane/the_platinum_searcher) - text searching tool written in Go, multi-platform
+* [Grep](https://www.gnu.org/software/grep/) - "Grep searches one or more input files for lines containing a match to a specified pattern."
+* [Ack](https://github.com/beyondgrep/ack2) - "ack is a code-searching tool, similar to grep but optimized for programmers searching large trees of source code."
+* [The Silver Searcher (aka AG)](https://github.com/ggreer/the_silver_searcher) - "A code-searching tool similar to ack, but faster."
+* [The Platinum Searcher (aka PT)](https://github.com/monochromegane/the_platinum_searcher) - "A code search tool similar to ack and the_silver_searcher(ag). It supports multi platforms and multi encodings."
+* [RipGrep (aka RG)](https://github.com/BurntSushi/ripgrep) - "ripgrep recursively searches directories for a regex pattern"
 
 ## Editor Integration
 
 ### Vim
 
-See [find-string.vim](https://github.com/drmohundro/find-string.vim). Installation should be a simple `Bundle 'drmohundro/find-string.vim'` if you [Vundle](https://github.com/gmarik/Vundle.vim).
+See [find-string.vim](https://github.com/drmohundro/find-string.vim). Installation should be a simple `Plug 'drmohundro/find-string.vim'` if you [vim-plug](https://github.com/junegunn/vim-plug).
 
 ## Options
 
