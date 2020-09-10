@@ -84,7 +84,7 @@ I like options, so I want to ensure everyone is aware of the other tools out the
 
 ### Vim
 
-See [find-string.vim](https://github.com/drmohundro/find-string.vim). Installation should be a simple `Plug 'drmohundro/find-string.vim'` if you [vim-plug](https://github.com/junegunn/vim-plug).
+See [find-string.vim](https://github.com/drmohundro/find-string.vim). Installation should be a simple `Plug 'drmohundro/find-string.vim'` if you use [vim-plug](https://github.com/junegunn/vim-plug).
 
 ## Options
 
