@@ -1,0 +1,34 @@
+name: Test Find-String
+
+on: [push, pull_request]
+
+jobs:
+  linux-test:
+    name: Ubuntu Tests
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Run Pester Tests
+      shell: pwsh
+      run: |
+        Invoke-Pester Find-String.Tests.ps1
+
+  mac-test:
+    name: Mac Tests
+    runs-on: macOS-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Run Pester Tests
+      shell: pwsh
+      run: |
+        Invoke-Pester Find-String.Tests.ps1
+
+  windows-test:
+    name: Windows Tests
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Run Pester Tests
+      shell: pwsh
+      run: |
+        Invoke-Pester Find-String.Tests.ps1
