@@ -1,0 +1,17 @@
+name: Test Find-String
+
+on: [push, pull_request]
+
+jobs:
+  matrix-test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macOS-latest, windows-latest]
+    name: Find-String Tests
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v3
+    - name: Run Pester Tests
+      shell: pwsh
+      run: |
+        Invoke-Pester Find-String.Tests.ps1
