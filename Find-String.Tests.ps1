@@ -39,17 +39,26 @@ Describe "Find-String" {
                 }
             }
         }
+
+        It "Shouldn't Call Write-Host if PipeOutput is Used" {
+            $results = Get-ChildItem -Path TestData | select-string test | Out-ColorMatchInfo -pipeOutput
+
+            $results.Length | Should -Be 2
+
+            $matchInfoResult = $results[0] -split "`n"
+            $textOutput = $results[1] -split "`n"
+
+            $matchInfoResult[0] | Should -Be ""
+            $matchInfoResult[1] | Should -Match "test.log"
+            $matchInfoResult[2] | Should -Match "2:this is a test"
+            $matchInfoResult[3] | Should -Be ""
+
+            $textOutput[0] | Should -Be ""
+            $textOutput[1] | Should -Match "test.log"
+            $textOutput[2] | Should -Be "2:this is a test"
+            $textOutput[3] | Should -Be "--"
+            $textOutput[4] | Should -Be "3:this is another test"
+            $textOutput[5] | Should -Be ""
+        }
     }
-
-    # It "Excludes files and directories" {
-    #     $result = Find-String -pattern "test" -path "C:\test" -excludeFiles "*.log" -excludeDirectories "temp"
-    #     $result | Should -Not -Contain "C:\test\temp\test.txt"
-    #     $result | Should -Contain "C:\test\test.log"
-    # }
-
-    # It "Returns only matching file names" {
-    #     $result = Find-String -pattern "test" -path "C:\test" -listMatchesOnly
-    #     $result | Should -Contain "test.txt"
-    #     $result | Should -Not -Contain "test.log"
-    # }
 }
