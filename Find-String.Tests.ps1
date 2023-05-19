@@ -45,8 +45,8 @@ Describe "Find-String" {
 
             $results.Length | Should -Be 2
 
-            $matchInfoResult = $results[0] -split "`n"
-            $textOutput = $results[1] -split "`n"
+            $matchInfoResult = $results[0] -split '\r?\n'
+            $textOutput = $results[1] -split '\r?\n'
 
             $matchInfoResult[0] | Should -Be ""
             $matchInfoResult[1] | Should -Match "test.log"
